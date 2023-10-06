@@ -21,9 +21,25 @@ export const Home = () => {
       .then((res) => setPokemons(res))
       .catch((err) => console.error(err));
   };
+
+  //filter
+  const pokeFilter = (name) => {
+    let filterPokemons = [];
+    if (name == "") {
+      getPokemonsApi();
+    }
+    for (var i in pokemons) {
+      //percorrendo antigo array de pokemons
+      if (pokemons[i].data.name.includes(name)) {
+        filterPokemons.push(pokemons[i]);
+      }
+    }
+    setPokemons(filterPokemons);
+  };
+
   return (
     <div>
-      <NavBar />
+      <NavBar pokeFilter={pokeFilter} />
       <Container maxWidth={false}>
         <Grid container spacing={3}>
           {pokemons.map((pokemon, key) => (
