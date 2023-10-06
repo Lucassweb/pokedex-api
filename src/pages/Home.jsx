@@ -1,7 +1,7 @@
 import { Container, Grid } from "@mui/material";
 import NavBar from "../components/NavBar";
 import PokemonCard from "../components/PokemonCard";
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export const Home = () => {
@@ -12,19 +12,27 @@ export const Home = () => {
   }, []);
 
   const getPokemonsApi = () => {
-    axios.get('https://pokeapi.co/api/v2/pokemon?limit=50')
-      .then((res) => setPokemons(res.data.results))
-      .catch((err) => console.error(err))
-  } 
+    let endpoint = [];
+    for (let i = 1; i < 50; i++) {
+      endpoint.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
+    }
+    axios
+      .all(endpoint.map((endpoint) => axios.get(endpoint)))
+      .then((res) => setPokemons(res))
+      .catch((err) => console.error(err));
+  };
   return (
     <div>
       <NavBar />
       <Container maxWidth={false}>
         <Grid container spacing={3}>
           {pokemons.map((pokemon, key) => (
-             <Grid item xs={2} key={key}>
-              <PokemonCard name={pokemon.name}/>
-           </Grid>
+            <Grid item xs={12} sm={6} md={2} key={key}>
+              <PokemonCard
+                name={pokemon.data.name}
+                image={pokemon.data.sprites.front_default}
+              />
+            </Grid>
           ))}
         </Grid>
       </Container>
